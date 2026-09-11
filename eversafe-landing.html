@@ -1,0 +1,856 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EverSafe — Know the moment they fall</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,500&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#10192B;
+    --navy-2:#182541;
+    --navy-line: rgba(255,255,255,0.13);
+    --paper:#FAF7F1;
+    --ink:#1B1A17;
+    --ink-soft: rgba(27,26,23,0.68);
+    --line: rgba(27,26,23,0.13);
+    --amber:#E2A33D;
+    --amber-deep:#C97F1F;
+    --moss:#4B6358;
+    --alert:#C1443C;
+    --cream-panel:#F1ECE0;
+    --radius: 3px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Work Sans', sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    font-weight:600;
+    line-height:1.08;
+    margin:0;
+    letter-spacing:-0.01em;
+    color:inherit;
+  }
+  p{margin:0;}
+  a{color:inherit;text-decoration:none;}
+  img,svg{display:block;max-width:100%;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:0 32px;
+  }
+  @media (max-width:640px){ .wrap{padding:0 20px;} }
+
+  ::selection{ background: var(--amber); color:var(--navy); }
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  /* ---------- NAV ---------- */
+  header.site{
+    position:sticky; top:0; z-index:50;
+    background:rgba(16,25,43,0.92);
+    backdrop-filter: blur(10px);
+    border-bottom:1px solid var(--navy-line);
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0;
+    color:#fff;
+  }
+  .logo{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.28rem;
+    color:#fff;
+  }
+  .logo .dot{
+    width:9px; height:9px; border-radius:50%;
+    background:var(--amber);
+    box-shadow:0 0 0 0 rgba(226,163,61,0.6);
+    animation: pulse 2.6s ease-out infinite;
+  }
+  @keyframes pulse{
+    0%{ box-shadow:0 0 0 0 rgba(226,163,61,0.55); }
+    70%{ box-shadow:0 0 0 9px rgba(226,163,61,0); }
+    100%{ box-shadow:0 0 0 0 rgba(226,163,61,0); }
+  }
+  .nav-links{
+    display:flex; align-items:center; gap:34px;
+    font-size:0.93rem;
+  }
+  .nav-links a{ color:rgba(255,255,255,0.78); transition:color 0.15s ease; }
+  .nav-links a:hover{ color:#fff; }
+  .nav-cta{
+    padding:10px 18px;
+    background:var(--amber);
+    color:var(--navy);
+    font-weight:600;
+    font-size:0.9rem;
+    border-radius:var(--radius);
+    transition: background 0.15s ease;
+  }
+  .nav-cta:hover{ background:#ecb457; }
+  .status-pill{
+    display:flex; align-items:center; gap:7px;
+    font-size:0.78rem; color:rgba(255,255,255,0.6);
+    padding:6px 12px;
+    border:1px solid var(--navy-line);
+    border-radius:20px;
+  }
+  .status-pill .dot{width:6px;height:6px;background:#6FCF97;border-radius:50%;animation:pulse2 2.2s ease-out infinite;}
+  @keyframes pulse2{
+    0%{ box-shadow:0 0 0 0 rgba(111,207,151,0.6);} 70%{box-shadow:0 0 0 6px rgba(111,207,151,0);} 100%{box-shadow:0 0 0 0 rgba(111,207,151,0);}
+  }
+  .nav-mobile-hide{display:flex;}
+  @media (max-width:860px){ .nav-links{display:none;} }
+  @media (max-width:560px){ .status-pill{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    background:
+      radial-gradient(ellipse 900px 500px at 78% -10%, rgba(226,163,61,0.10), transparent 60%),
+      var(--navy);
+    color:#fff;
+    padding:88px 0 100px;
+    overflow:hidden;
+    position:relative;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.05fr 0.95fr;
+    gap:64px;
+    align-items:center;
+  }
+  @media (max-width:920px){
+    .hero-grid{ grid-template-columns:1fr; gap:56px; }
+  }
+  .hero h1{
+    font-size:clamp(2.3rem, 4.6vw, 3.5rem);
+    color:#fff;
+    max-width:12ch;
+    opacity:0;
+    transform:translateY(14px);
+    animation: rise 0.7s cubic-bezier(.2,.7,.3,1) 0.15s forwards;
+  }
+  .hero .sub{
+    margin-top:22px;
+    font-size:1.09rem;
+    color:rgba(255,255,255,0.76);
+    max-width:46ch;
+    opacity:0;
+    transform:translateY(14px);
+    animation: rise 0.7s cubic-bezier(.2,.7,.3,1) 0.32s forwards;
+  }
+  .hero .actions{
+    margin-top:34px;
+    display:flex; align-items:center; gap:26px; flex-wrap:wrap;
+    opacity:0;
+    transform:translateY(14px);
+    animation: rise 0.7s cubic-bezier(.2,.7,.3,1) 0.46s forwards;
+  }
+  @keyframes rise{ to{ opacity:1; transform:translateY(0); } }
+
+  .btn-primary{
+    padding:14px 26px;
+    background:var(--amber);
+    color:var(--navy);
+    font-weight:600;
+    font-size:0.98rem;
+    border-radius:var(--radius);
+    transition: transform 0.15s ease, background 0.15s ease;
+    display:inline-block;
+  }
+  .btn-primary:hover{ background:#ecb457; transform:translateY(-1px); }
+  .link-underline{
+    font-weight:600; font-size:0.95rem;
+    border-bottom:1px solid rgba(255,255,255,0.4);
+    padding-bottom:3px;
+    color:#fff;
+    transition:border-color 0.15s ease;
+  }
+  .link-underline:hover{ border-color:#fff; }
+
+  .hero-note{
+    margin-top:40px;
+    font-size:0.88rem;
+    color:rgba(255,255,255,0.5);
+    max-width:38ch;
+    border-left:2px solid var(--navy-line);
+    padding-left:14px;
+  }
+
+  /* ---------- PHONE MOCKUP ---------- */
+  .phone-stage{
+    position:relative;
+    display:flex; justify-content:center;
+  }
+  .phone{
+    width:280px;
+    background:#0C1220;
+    border:1px solid rgba(255,255,255,0.14);
+    border-radius:34px;
+    padding:14px;
+    box-shadow: 0 40px 80px -30px rgba(0,0,0,0.6);
+  }
+  .phone-screen{
+    background:var(--navy-2);
+    border-radius:22px;
+    padding:18px 16px 22px;
+    min-height:420px;
+    display:flex; flex-direction:column;
+    position:relative;
+    overflow:hidden;
+  }
+  .phone-topbar{
+    display:flex; justify-content:space-between; align-items:center;
+    font-size:0.72rem; color:rgba(255,255,255,0.45); margin-bottom:20px;
+  }
+  .phone-app-name{
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.02rem; color:#fff;
+  }
+  .phone-empty{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; color:rgba(255,255,255,0.4); font-size:0.85rem;
+    gap:14px;
+    transition:opacity 0.3s ease;
+  }
+  .ring{
+    width:64px; height:64px; border-radius:50%;
+    border:1.5px solid rgba(255,255,255,0.18);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .ring::before{
+    content:'';
+    position:absolute; inset:-1.5px;
+    border-radius:50%;
+    border:1.5px solid rgba(111,207,151,0.5);
+    animation: sweep 3s linear infinite;
+  }
+  @keyframes sweep{ 0%{ transform:rotate(0deg); opacity:1;} 100%{ transform:rotate(360deg); opacity:1;} }
+  .ring .core{ width:8px; height:8px; border-radius:50%; background:#6FCF97; }
+
+  .alert-card{
+    position:absolute; left:16px; right:16px; bottom:-260px;
+    background:var(--paper);
+    color:var(--ink);
+    border-radius:14px;
+    padding:16px;
+    box-shadow:0 20px 40px -12px rgba(0,0,0,0.5);
+    transition: bottom 0.55s cubic-bezier(.2,.8,.3,1);
+  }
+  .alert-card.show{ bottom:16px; }
+  .alert-top{
+    display:flex; justify-content:space-between; align-items:flex-start; gap:8px;
+  }
+  .alert-room{ font-size:0.68rem; color:var(--ink-soft); font-weight:600; }
+  .alert-badge{
+    background:var(--alert); color:#fff; font-size:0.68rem; font-weight:700;
+    padding:3px 8px; border-radius:20px;
+  }
+  .alert-title{
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.02rem;
+    margin-top:8px;
+  }
+  .alert-meta{
+    margin-top:4px; font-size:0.76rem; color:var(--ink-soft);
+  }
+  .alert-actions{
+    margin-top:14px; display:flex; gap:8px;
+  }
+  .alert-btn{
+    flex:1; text-align:center; padding:9px 0; border-radius:8px;
+    font-size:0.78rem; font-weight:600;
+  }
+  .alert-btn.primary{ background:var(--navy); color:#fff; }
+  .alert-btn.ghost{ background:var(--cream-panel); color:var(--ink); }
+
+  .sim-btn{
+    margin-top:26px;
+    display:block;
+    width:100%;
+    max-width:280px;
+    margin-left:auto; margin-right:auto;
+    padding:12px 0;
+    text-align:center;
+    border:1px solid var(--navy-line);
+    color:rgba(255,255,255,0.85);
+    border-radius:var(--radius);
+    font-size:0.88rem;
+    font-weight:600;
+    transition: border-color 0.15s ease, background 0.15s ease;
+  }
+  .sim-btn:hover{ border-color:rgba(255,255,255,0.5); background:rgba(255,255,255,0.04); }
+
+  /* ---------- SECTION HEADERS ---------- */
+  section{ padding:96px 0; }
+  @media (max-width:640px){ section{ padding:68px 0; } }
+  .section-head{ max-width:640px; }
+  .section-head h2{
+    font-size:clamp(1.7rem, 3vw, 2.35rem);
+  }
+  .section-head .lede{
+    margin-top:16px;
+    font-size:1.05rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- PROBLEM ---------- */
+  .problem{
+    display:grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap:70px;
+    align-items:start;
+  }
+  @media (max-width:860px){ .problem{ grid-template-columns:1fr; gap:36px; } }
+  .problem p + p{ margin-top:16px; }
+  .problem .body p{ color:var(--ink-soft); font-size:1.02rem; }
+  .callout{
+    background:var(--cream-panel);
+    border-left:3px solid var(--amber-deep);
+    padding:26px 28px;
+    border-radius:2px;
+  }
+  .callout p{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:1.2rem;
+    line-height:1.42;
+    color:var(--ink);
+  }
+  .callout .attrib{
+    margin-top:14px;
+    font-family:'Work Sans', sans-serif;
+    font-style:normal;
+    font-size:0.85rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- HOW IT WORKS ---------- */
+  .how{
+    background:var(--navy-2);
+    color:#fff;
+  }
+  .how .section-head h2{ color:#fff; }
+  .how .section-head .lede{ color:rgba(255,255,255,0.65); }
+  .steps{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+    position:relative;
+  }
+  @media (max-width:860px){ .steps{ grid-template-columns:1fr; gap:40px; } }
+  .step{
+    padding:0 28px;
+    border-left:1px solid var(--navy-line);
+  }
+  .step:first-child{ padding-left:0; border-left:none; }
+  @media (max-width:860px){
+    .step{ border-left:none; padding-left:0; border-top:1px solid var(--navy-line); padding-top:32px; }
+    .step:first-child{ border-top:none; padding-top:0; }
+  }
+  .step-num{
+    font-family:'Fraunces', serif;
+    font-size:0.95rem;
+    color:var(--amber);
+    font-weight:600;
+    margin-bottom:18px;
+  }
+  .step h3{
+    font-size:1.28rem;
+    color:#fff;
+    max-width:20ch;
+  }
+  .step p{
+    margin-top:12px;
+    font-size:0.96rem;
+    color:rgba(255,255,255,0.62);
+    max-width:32ch;
+  }
+
+  /* ---------- FEATURES ---------- */
+  .feature-row{
+    display:grid;
+    grid-template-columns: 1fr 1.4fr;
+    gap:48px;
+    padding:34px 0;
+    border-top:1px solid var(--line);
+    align-items:start;
+  }
+  .feature-row:last-child{ border-bottom:1px solid var(--line); }
+  @media (max-width:720px){
+    .feature-row{ grid-template-columns:1fr; gap:10px; }
+  }
+  .feature-row h3{
+    font-size:1.24rem;
+  }
+  .feature-row p{
+    color:var(--ink-soft);
+    font-size:1rem;
+    max-width:56ch;
+  }
+  .feature-index{
+    font-size:0.82rem;
+    color:var(--moss);
+    font-weight:600;
+    margin-bottom:8px;
+    display:block;
+  }
+
+  /* ---------- PRIVACY ---------- */
+  .privacy{
+    background:var(--cream-panel);
+  }
+  .privacy-grid{
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap:64px;
+    align-items:center;
+  }
+  @media (max-width:860px){ .privacy-grid{ grid-template-columns:1fr; gap:40px; } }
+  .privacy-diagram{
+    background:var(--navy);
+    border-radius:6px;
+    padding:36px 28px;
+    color:#fff;
+  }
+  .flow{ display:flex; flex-direction:column; gap:0; }
+  .flow-node{
+    display:flex; align-items:center; gap:14px;
+    padding:14px 0;
+  }
+  .flow-node .mark{
+    width:8px; height:8px; border-radius:50%; background:var(--amber); flex-shrink:0;
+  }
+  .flow-node.dim .mark{ background:rgba(255,255,255,0.25); }
+  .flow-node span{ font-size:0.92rem; }
+  .flow-node.dim span{ color:rgba(255,255,255,0.45); }
+  .flow-line{
+    width:1px; height:22px; background:var(--navy-line); margin-left:3.5px;
+  }
+  .privacy-text ul{ margin:18px 0 0; padding:0; list-style:none; }
+  .privacy-text li{
+    padding-left:20px;
+    position:relative;
+    margin-top:12px;
+    color:var(--ink-soft);
+    font-size:1rem;
+  }
+  .privacy-text li::before{
+    content:'';
+    position:absolute; left:0; top:9px;
+    width:6px; height:6px; border-radius:50%;
+    background:var(--moss);
+  }
+
+  /* ---------- AUDIENCE ---------- */
+  .audience-list{
+    margin-top:48px;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:0;
+  }
+  @media (max-width:780px){ .audience-list{ grid-template-columns:1fr; } }
+  .audience-item{
+    padding:28px 30px 28px 0;
+    border-top:1px solid var(--line);
+  }
+  .audience-list .audience-item:nth-child(-n+3){ padding-top:0; }
+  @media (max-width:780px){
+    .audience-item{ padding:24px 0 !important; }
+    .audience-list .audience-item:first-child{ border-top:none; }
+  }
+  .audience-item h3{ font-size:1.1rem; }
+  .audience-item p{ margin-top:10px; color:var(--ink-soft); font-size:0.96rem; }
+
+  /* ---------- CTA / FORM ---------- */
+  .cta-section{
+    background:var(--navy);
+    color:#fff;
+  }
+  .cta-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:64px;
+    align-items:start;
+  }
+  @media (max-width:860px){ .cta-grid{ grid-template-columns:1fr; gap:40px; } }
+  .cta-grid h2{ color:#fff; font-size:clamp(1.7rem,3vw,2.3rem); max-width:14ch; }
+  .cta-grid .lede{ margin-top:16px; color:rgba(255,255,255,0.68); font-size:1.03rem; max-width:44ch; }
+
+  form.request{
+    background:var(--navy-2);
+    border:1px solid var(--navy-line);
+    border-radius:6px;
+    padding:30px;
+  }
+  .field{ margin-bottom:18px; }
+  .field label{
+    display:block; font-size:0.83rem; color:rgba(255,255,255,0.6); margin-bottom:7px;
+  }
+  .field input{
+    width:100%;
+    background:rgba(255,255,255,0.05);
+    border:1px solid var(--navy-line);
+    border-radius:4px;
+    padding:11px 13px;
+    color:#fff;
+    font-family:inherit;
+    font-size:0.94rem;
+  }
+  .field input:focus{
+    outline:2px solid var(--amber);
+    outline-offset:1px;
+    border-color:transparent;
+  }
+  .field input::placeholder{ color:rgba(255,255,255,0.28); }
+  .submit-btn{
+    width:100%;
+    padding:13px 0;
+    background:var(--amber);
+    color:var(--navy);
+    font-weight:700;
+    font-size:0.96rem;
+    border-radius:4px;
+    transition: background 0.15s ease;
+  }
+  .submit-btn:hover{ background:#ecb457; }
+  .form-success{
+    display:none;
+    text-align:center;
+    padding:28px 10px;
+  }
+  .form-success h3{ color:#fff; font-size:1.2rem; }
+  .form-success p{ margin-top:10px; color:rgba(255,255,255,0.6); font-size:0.92rem; }
+  form.request.sent .field, form.request.sent .submit-btn, form.request.sent .form-lede{ display:none; }
+  form.request.sent .form-success{ display:block; }
+  .form-lede{ font-size:0.85rem; color:rgba(255,255,255,0.5); margin-bottom:20px; }
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--navy);
+    border-top:1px solid var(--navy-line);
+    color:rgba(255,255,255,0.55);
+    padding:48px 0 36px;
+  }
+  .foot-grid{
+    display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:30px;
+  }
+  .foot-brand .logo{ margin-bottom:12px; }
+  .foot-brand p{ font-size:0.9rem; max-width:32ch; color:rgba(255,255,255,0.45); }
+  .foot-cols{ display:flex; gap:64px; flex-wrap:wrap; }
+  .foot-col h4{
+    font-size:0.78rem; color:rgba(255,255,255,0.4); font-weight:600; margin-bottom:14px;
+  }
+  .foot-col a, .foot-col p{ display:block; font-size:0.9rem; margin-bottom:9px; color:rgba(255,255,255,0.7); }
+  .foot-bottom{
+    margin-top:44px; padding-top:24px; border-top:1px solid var(--navy-line);
+    font-size:0.8rem; color:rgba(255,255,255,0.35);
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <div class="logo"><span class="dot"></span>EverSafe</div>
+    <nav class="nav-links">
+      <a href="#how">How it works</a>
+      <a href="#features">Features</a>
+      <a href="#privacy">Privacy</a>
+      <a href="#families">For families</a>
+    </nav>
+    <div class="nav-mobile-hide" style="display:flex; align-items:center; gap:16px;">
+      <div class="status-pill"><span class="dot"></span>Edge AI online</div>
+      <a href="#request" class="nav-cta">Book a home visit</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>The moment they fall, you'll know.</h1>
+      <p class="sub">EverSafe watches over your parents' home day and night. When a fall happens, your whole family gets an alert within seconds — whether you're at the office, stuck in traffic, or a country away.</p>
+      <div class="actions">
+        <a href="#request" class="btn-primary">Book a home visit</a>
+        <a href="#how" class="link-underline">See how it works</a>
+      </div>
+      <p class="hero-note">Everything runs on a small computer inside the home. No footage is uploaded, and no monthly cloud fee is charged just to keep watching.</p>
+    </div>
+
+    <div class="phone-stage">
+      <div>
+        <div class="phone">
+          <div class="phone-screen">
+            <div class="phone-topbar">
+              <span class="phone-app-name">Family</span>
+              <span id="phone-time">11:15 PM</span>
+            </div>
+            <div class="phone-empty" id="phone-empty">
+              <div class="ring"><div class="core"></div></div>
+              <p>Watching the living room.<br>No incidents right now.</p>
+            </div>
+            <div class="alert-card" id="alert-card">
+              <div class="alert-top">
+                <span class="alert-room">LIVING ROOM</span>
+                <span class="alert-badge">Fall detected</span>
+              </div>
+              <div class="alert-title">Possible fall — 91% confidence</div>
+              <div class="alert-meta">Detected 11:15 PM · waiting for a family member to respond</div>
+              <div class="alert-actions">
+                <div class="alert-btn primary">I'm responding</div>
+                <div class="alert-btn ghost">False alarm</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="sim-btn" id="sim-btn">Simulate a fall alert</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="problem">
+  <div class="wrap problem">
+    <div class="body">
+      <h2 style="font-size:clamp(1.7rem, 3vw, 2.35rem); margin-bottom:20px;">You can't watch every room, every minute.</h2>
+      <p>Most working families in Phnom Penh don't live under the same roof as their aging parents anymore — or if they do, they're out of the house from early morning until evening. A helper might be around, but not in every room, all the time.</p>
+      <p>A fall is usually over in less than a second. What decides how serious it becomes is what happens in the minutes right after — and if no one is watching, those minutes can stretch on far longer than they should.</p>
+    </div>
+    <div class="callout">
+      <p>"I check in by phone every evening. It only takes one bad afternoon for that not to be enough."</p>
+      <div class="attrib">A scenario we hear often from families we've spoken with</div>
+    </div>
+  </div>
+</section>
+
+<section class="how" id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Three steps, running quietly in the background.</h2>
+      <p class="lede">No one has to remember to check an app. EverSafe only speaks up when something actually needs your attention.</p>
+    </div>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <h3>Cameras watch the key rooms</h3>
+        <p>Discreet CCTV cameras go where falls are most likely — the living room, the hallway, near the bathroom entrance.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <h3>AI detects the fall on the spot</h3>
+        <p>A small Mini PC inside the home runs the detection model directly. Nothing is sent anywhere until there's something to report.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <h3>Your family is alerted in seconds</h3>
+        <p>Everyone in the family group gets a notification with a snapshot and confidence score, and can mark that help is on the way.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Built around the moment that matters most.</h2>
+      <p class="lede">Every part of EverSafe is designed to shorten the time between a fall and someone knowing about it — without adding another thing for your family to manage.</p>
+    </div>
+
+    <div style="margin-top:44px;">
+      <div class="feature-row">
+        <div><span class="feature-index">Speed</span><h3>Seconds, not minutes</h3></div>
+        <p>Detection and alert delivery happen in real time. No one has to happen to glance at a camera feed or wait for a scheduled check-in.</p>
+      </div>
+      <div class="feature-row">
+        <div><span class="feature-index">Privacy</span><h3>Nothing leaves the house by default</h3></div>
+        <p>Video is analyzed on the Mini PC inside the home. Only an alert and a still image reach the family app — full footage stays local unless your family chooses to review it.</p>
+      </div>
+      <div class="feature-row">
+        <div><span class="feature-index">Coordination</span><h3>One family, one view</h3></div>
+        <p>Everyone in the household group sees the same alert and the same response status, so two people don't rush over while a third assumes it's handled.</p>
+      </div>
+      <div class="feature-row">
+        <div><span class="feature-index">Accuracy over time</span><h3>Learns from your feedback</h3></div>
+        <p>Mark a false alarm and the system takes note. Over weeks, alerts get more precise and notification fatigue goes down.</p>
+      </div>
+      <div class="feature-row">
+        <div><span class="feature-index">Local fit</span><h3>Made for Cambodian households</h3></div>
+        <p>Setup, support, and the family app are available in both Khmer and English, and installation is scheduled around your household's routine.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="privacy" id="privacy">
+  <div class="wrap privacy-grid">
+    <div class="privacy-diagram">
+      <div class="flow">
+        <div class="flow-node"><span class="mark"></span><span>Camera captures video</span></div>
+        <div class="flow-line"></div>
+        <div class="flow-node"><span class="mark"></span><span>Mini PC analyzes it on-site</span></div>
+        <div class="flow-line"></div>
+        <div class="flow-node"><span class="mark"></span><span>Alert + snapshot sent to app</span></div>
+        <div class="flow-line"></div>
+        <div class="flow-node dim"><span class="mark"></span><span>Full footage — stays in the home</span></div>
+      </div>
+    </div>
+    <div class="privacy-text">
+      <h2 style="font-size:clamp(1.6rem, 2.6vw, 2.1rem);">Where the video actually goes: nowhere, usually.</h2>
+      <p style="margin-top:16px; color:var(--ink-soft); font-size:1.02rem;">Putting a camera in a parent's living room only feels acceptable if the footage isn't sitting on someone else's server. EverSafe processes everything on a small computer inside the home.</p>
+      <ul>
+        <li>Fall detection happens locally — not in the cloud.</li>
+        <li>Only an alert and a single still image reach your family's phones.</li>
+        <li>Full video is retrievable by the family only, for the period around a real incident.</li>
+        <li>No monthly cloud storage bill just to keep the system running.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="families">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Built for people juggling a full-time job and a parent who insists they're fine.</h2>
+    </div>
+    <div class="audience-list">
+      <div class="audience-item">
+        <h3>Adult children working full-time</h3>
+        <p>You're at the office most of the day. EverSafe means you're not relying on a phone call that comes too late.</p>
+      </div>
+      <div class="audience-item">
+        <h3>Domestic helpers &amp; caregivers</h3>
+        <p>One person can't be in every room. EverSafe covers the moments a caregiver simply isn't there to see.</p>
+      </div>
+      <div class="audience-item">
+        <h3>Family living further away</h3>
+        <p>Whether you're across the city or overseas, you're added to the same alert group as everyone else at home.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section" id="request">
+  <div class="wrap cta-grid">
+    <div>
+      <h2>Give them a safety net, without moving in.</h2>
+      <p class="lede">We'll visit the home, recommend where cameras should go, and have EverSafe running within the week. No obligation, no hard sell.</p>
+    </div>
+    <form class="request" id="request-form">
+      <p class="form-lede">Tell us a bit about the household and we'll get in touch to schedule a visit.</p>
+      <div class="field">
+        <label for="name">Your name</label>
+        <input id="name" type="text" placeholder="e.g. Sokha Chan" required>
+      </div>
+      <div class="field">
+        <label for="phone">Phone number</label>
+        <input id="phone" type="tel" placeholder="e.g. 012 345 678" required>
+      </div>
+      <div class="field">
+        <label for="area">Neighborhood in Phnom Penh</label>
+        <input id="area" type="text" placeholder="e.g. Toul Kork" required>
+      </div>
+      <button type="submit" class="submit-btn">Request a home visit</button>
+      <div class="form-success">
+        <h3>Request received.</h3>
+        <p>Someone from EverSafe will call within one business day to schedule your home visit.</p>
+      </div>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div class="foot-brand">
+      <div class="logo" style="color:#fff;"><span class="dot"></span>EverSafe</div>
+      <p>Watching over the people who raised you — quietly, and only when it matters.</p>
+    </div>
+    <div class="foot-cols">
+      <div class="foot-col">
+        <h4>Product</h4>
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+      </div>
+      <div class="foot-col">
+        <h4>Contact</h4>
+        <p>hello@eversafe.kh</p>
+        <p>+855 12 345 678</p>
+        <p>Phnom Penh, Cambodia</p>
+      </div>
+    </div>
+  </div>
+  <div class="wrap foot-bottom">
+    © 2026 EverSafe. All rights reserved.
+  </div>
+</footer>
+
+<script>
+  const simBtn = document.getElementById('sim-btn');
+  const alertCard = document.getElementById('alert-card');
+  const phoneEmpty = document.getElementById('phone-empty');
+  const phoneTime = document.getElementById('phone-time');
+
+  simBtn.addEventListener('click', () => {
+    const now = new Date();
+    let h = now.getHours() % 12 || 12;
+    let m = now.getMinutes().toString().padStart(2, '0');
+    let ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+    phoneTime.textContent = `${h}:${m} ${ampm}`;
+
+    phoneEmpty.style.opacity = '0';
+    alertCard.classList.add('show');
+    simBtn.textContent = 'Reset demo';
+  });
+
+  simBtn.addEventListener('click', function resetHandler() {
+    if (alertCard.classList.contains('show') && simBtn.textContent === 'Reset demo') {
+      // second click resets — handled by toggle below
+    }
+  });
+
+  let alertShown = false;
+  simBtn.onclick = () => {
+    if (!alertShown) {
+      const now = new Date();
+      let h = now.getHours() % 12 || 12;
+      let m = now.getMinutes().toString().padStart(2, '0');
+      let ampm = now.getHours() >= 12 ? 'PM' : 'AM';
+      phoneTime.textContent = `${h}:${m} ${ampm}`;
+      phoneEmpty.style.opacity = '0';
+      alertCard.classList.add('show');
+      simBtn.textContent = 'Reset demo';
+      alertShown = true;
+    } else {
+      alertCard.classList.remove('show');
+      phoneEmpty.style.opacity = '1';
+      simBtn.textContent = 'Simulate a fall alert';
+      alertShown = false;
+    }
+  };
+
+  const form = document.getElementById('request-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    form.classList.add('sent');
+  });
+</script>
+
+</body>
+</html>
